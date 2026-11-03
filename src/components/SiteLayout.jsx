@@ -44,6 +44,7 @@ export default function SiteLayout() {
                 ))}
               </div>
             </div>
+            <NavLink to="/anual" className={({ isActive }) => isActive ? 'active' : ''} onClick={close}>Anual</NavLink>
             <NavLink to="/historicos" className={({ isActive }) => isActive ? 'active' : ''} onClick={close}>Históricos</NavLink>
             <NavLink to="/equipos" className={({ isActive }) => isActive ? 'active' : ''} onClick={close}>Equipos</NavLink>
           </nav>

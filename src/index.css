@@ -255,6 +255,10 @@ table.stand tbody tr:hover{background:var(--surface-2);}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hist-leader .hl-val{color:var(--gold);}}
 :root[data-theme="dark"] .hist-leader .hl-val{color:var(--gold);}
 
+.anual-leaders{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.anual-leaders .hist-leader{margin-bottom:0;}
+@media (max-width:760px){ .anual-leaders{grid-template-columns:1fr;} }
+
 /* Equipos */
 .teams-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
 .team-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 12px;text-align:center;box-shadow:var(--shadow);transition:transform .15s,border-color .15s;}

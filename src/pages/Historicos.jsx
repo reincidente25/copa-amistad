@@ -1,10 +1,8 @@
 // src/pages/Historicos.jsx
 import { useState } from 'react';
 import { useStore } from '../store/AppStore';
-import { useSeason } from '../store/Season';
-import { teamMap, annualStandings } from '../lib/compute';
+import { teamMap } from '../lib/compute';
 import { HIST_PUNTOS, HIST_GOL, HIST_TIT } from '../data/mock';
-import { StandingsTable } from '../components/Displays';
 import Crest from '../components/Crest';
 import { Trophy } from '../components/Icons';
 
@@ -16,7 +14,6 @@ function Leader({ children }) { return <div className="hist-leader">{children}</
 
 export default function Historicos() {
   const { data } = useStore();
-  const { season } = useSeason();
   const tm = teamMap(data);
   const [sub, setSub] = useState('puntos');
 
@@ -25,18 +22,7 @@ export default function Historicos() {
   const tit = [...HIST_TIT].sort((a, b) => titTotal(b) - titTotal(a));
 
   return (
-    <>
       <section className="band">
-        <div className="wrap">
-          <div className="sec-head">
-            <div><div className="eyebrow">Temporada {season}</div><h2>Tabla anual {season}</h2>
-              <p>Puntos acumulados en todas las competencias del año (ligas y copas). Cambiá el año desde el selector del menú.</p></div>
-          </div>
-          <StandingsTable rows={annualStandings(data, season)} teamMap={tm} />
-        </div>
-      </section>
-
-      <section className="band alt">
         <div className="wrap">
           <div className="sec-head"><div><div className="eyebrow">Para la historia</div><h2>Tablas históricas</h2>
             <p>El acumulado de todas las temporadas de la Copa Amistad.</p></div></div>
@@ -136,6 +122,5 @@ export default function Historicos() {
           })()}
         </div>
       </section>
-    </>
   );
 }

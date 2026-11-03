@@ -8,6 +8,7 @@ import SiteLayout from './components/SiteLayout';
 import Home from './pages/Home';
 import Competition from './pages/Competition';
 import Historicos from './pages/Historicos';
+import Anual from './pages/Anual';
 import Equipos from './pages/Equipos';
 import TeamDetail from './pages/TeamDetail';
 
@@ -31,6 +32,7 @@ export default function App() {
             <Route element={<SiteLayout />}>
               <Route index element={<Home />} />
               <Route path="competencia/:id" element={<Competition />} />
+              <Route path="anual" element={<Anual />} />
               <Route path="historicos" element={<Historicos />} />
               <Route path="equipos" element={<Equipos />} />
               <Route path="equipo/:id" element={<TeamDetail />} />
