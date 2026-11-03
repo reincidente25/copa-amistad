@@ -107,6 +107,59 @@ export function GroupTables({ groups, teamMap }) {
   );
 }
 
+function BkTeam({ id, seed, score, win, teamMap }) {
+  if (!id) return <div className="bk-team tbd"><span className="nm">{seed}</span></div>;
+  return (
+    <div className={`bk-team ${win ? 'win' : ''}`}>
+      <Crest team={teamMap[id]} size={24} />
+      <span className="nm">{teamMap[id]?.name}</span>
+      {score != null && <span className="sc">{score}</span>}
+      {win && <span className="chk">✓</span>}
+    </div>
+  );
+}
+
+function BkMatch({ m, teamMap }) {
+  return (
+    <div className="bk-match">
+      <BkTeam id={m.home} seed={m.seedH} score={m.hg} win={m.winner && m.winner === m.home} teamMap={teamMap} />
+      <BkTeam id={m.away} seed={m.seedA} score={m.ag} win={m.winner && m.winner === m.away} teamMap={teamMap} />
+    </div>
+  );
+}
+
+export function Bracket({ data, teamMap, comp }) {
+  const champTeam = data.champion ? teamMap[data.champion] : null;
+  return (
+    <>
+      {data.decided && champTeam && <ChampBanner team={champTeam} label={'Campeón ' + comp.short} />}
+      <div className="bracket">
+        <div className="bracket-col">
+          <div className="bk-round-label">Semifinales</div>
+          {data.semis.map((m, i) => <BkMatch key={i} m={m} teamMap={teamMap} />)}
+        </div>
+        <div className="bk-join" aria-hidden="true" />
+        <div className="bracket-col final-col">
+          <div className="bk-round-label">Final</div>
+          <BkMatch m={data.final} teamMap={teamMap} />
+        </div>
+        <div className="bracket-col champ-col">
+          <div className="bk-round-label">Campeón</div>
+          <div className={`bk-champion ${champTeam ? '' : 'tbd'}`}>
+            <Trophy size={30} color={champTeam ? '#1b1405' : 'var(--muted)'} />
+            {champTeam ? <span className="bc-name">{champTeam.name}</span> : <span className="bc-name">Por definir</span>}
+          </div>
+        </div>
+      </div>
+      {!data.decided && (
+        <div className="comp-note">{data.hasSeeds
+          ? 'Clasificados provisorios según la fase de grupos. Las llaves se definen al cerrar los grupos.'
+          : 'Las llaves se arman con los 2 primeros de cada grupo al comenzar los playoffs.'}</div>
+      )}
+    </>
+  );
+}
+
 export function ScorersList({ list, teamMap }) {
   if (!list.length) return <div className="comp-note">Todavía no hay goles cargados en esta competencia.</div>;
   return (

@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useStore } from '../store/AppStore';
 import { STATUS_LABEL } from '../data/mock';
-import { teamMap, standings, groupStandings, scorers, fixture } from '../lib/compute';
+import { teamMap, standings, groupStandings, scorers, fixture, bracket } from '../lib/compute';
 import { Trophy, Back } from '../components/Icons';
-import { StandingsTable, GroupTables, ScorersList, MatchList, JornadaResults, ChampBanner } from '../components/Displays';
+import { StandingsTable, GroupTables, ScorersList, MatchList, JornadaResults, ChampBanner, Bracket } from '../components/Displays';
 
-const TABS = [['posiciones', 'Posiciones'], ['goleadores', 'Goleadores'], ['resultados', 'Resultados']];
+const TABS_LIGA = [['posiciones', 'Posiciones'], ['goleadores', 'Goleadores'], ['resultados', 'Resultados']];
+const TABS_COPA = [['posiciones', 'Fase de grupos'], ['llaves', 'Llaves'], ['goleadores', 'Goleadores'], ['resultados', 'Resultados']];
 
 export default function Competition() {
   const { id } = useParams();
@@ -20,18 +21,21 @@ export default function Competition() {
   const c = data.competitions.find((x) => x.id === id);
   if (!c) return <Navigate to="/" replace />;
   const tm = teamMap(data);
-  const hasJornadas = c.cat !== 'copa' && Array.isArray(c.months) && c.months.length > 0;
-  const kindPill = c.cat === 'copa' ? 'Grupos + playoffs' : c.cat === 'nacional' ? 'Liga flexible · sin copas' : 'Liga · acumulada';
+  const isCopa = c.cat === 'copa';
+  const hasJornadas = !isCopa && Array.isArray(c.months) && c.months.length > 0;
+  const kindPill = isCopa ? 'Grupos + playoffs' : c.cat === 'nacional' ? 'Liga flexible · sin copas' : 'Liga · acumulada';
+  const TABS = isCopa ? TABS_COPA : TABS_LIGA;
+  const bk = isCopa ? bracket(data, c) : null;
 
   let content = null;
-  if (tab === 'posiciones') {
-    if (c.cat === 'copa') {
+  if (tab === 'llaves') {
+    content = <Bracket data={bk} teamMap={tm} comp={c} />;
+  } else if (tab === 'posiciones') {
+    if (isCopa) {
       const groups = groupStandings(data, c.id);
-      const champTeam = c.status === 'fin' ? tm[(groups.A?.[0] || {}).id] : null;
       content = (<>
-        {champTeam && <ChampBanner team={champTeam} label="Campeón 2026" />}
         <GroupTables groups={groups} teamMap={tm} />
-        <div className="comp-note">Fase de grupos · clasifican los <b>2 primeros</b> de cada grupo a semifinales.</div>
+        <div className="comp-note">Fase de grupos · clasifican los <b>2 primeros</b> de cada grupo a semifinales. Mirá el cruce en <b>Llaves</b>.</div>
       </>);
     } else if (jornada) {
       content = (<>

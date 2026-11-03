@@ -1,5 +1,6 @@
 // src/lib/compute.js
 // Cálculos derivados de los partidos: participantes, posiciones, goleadores, fixture.
+import { hash } from '../data/mock';
 
 export function matchesOf(state, compId) {
   return state.matches.filter((m) => m.compId === compId);
@@ -89,6 +90,29 @@ export function fixture(state, compId, round) {
 
 export function teamMap(state) {
   const m = {}; state.teams.forEach((t) => (m[t.id] = t)); return m;
+}
+
+// Bracket de playoffs de una copa: 2 primeros de cada grupo → semis → final.
+// Se resuelve (con resultados) solo cuando la copa está finalizada.
+export function bracket(state, comp) {
+  const groups = groupStandings(state, comp.id);
+  const A = groups.A || [], B = groups.B || [];
+  const pick = (arr, i) => (arr[i] ? arr[i].id : null);
+  const decided = comp.status === 'fin';
+
+  const play = (home, away, key) => {
+    if (!home || !away || !decided) return { home, away, hg: null, ag: null, winner: null };
+    let hg = hash(comp.id + key + home) % 4;
+    let ag = hash(comp.id + key + away) % 4;
+    if (hg === ag) hg += 1; // sin empates en eliminación
+    return { home, away, hg, ag, winner: hg > ag ? home : away };
+  };
+
+  const sf1 = { label: 'Semifinal 1', seedH: '1.º Grupo A', seedA: '2.º Grupo B', ...play(pick(A, 0), pick(B, 1), 'SF1') };
+  const sf2 = { label: 'Semifinal 2', seedH: '1.º Grupo B', seedA: '2.º Grupo A', ...play(pick(B, 0), pick(A, 1), 'SF2') };
+  const final = { label: 'Final', seedH: 'Ganador SF 1', seedA: 'Ganador SF 2', ...play(sf1.winner, sf2.winner, 'FIN') };
+
+  return { semis: [sf1, sf2], final, champion: final.winner, decided, hasSeeds: !!pick(A, 0) };
 }
 
 // Goles por jugador. compId null = todas las competencias.
