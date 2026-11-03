@@ -1,4 +1,5 @@
 // src/components/Displays.jsx
+import { Link } from 'react-router-dom';
 import Crest from './Crest';
 import { Trophy } from './Icons';
 import { hash } from '../data/mock';
@@ -29,7 +30,7 @@ export function StandingsTable({ rows, teamMap, qCut = 0 }) {
           {rows.map((r, i) => (
             <tr key={r.id} className={i < qCut ? (i === 0 ? 'pos-q2' : 'pos-q') : ''}>
               <td><span className="pos-n">{i + 1}</span></td>
-              <td className="team"><div className="team-cell"><Crest team={teamMap[r.id]} size={26} /><span className="nm">{teamMap[r.id]?.name}</span></div></td>
+              <td className="team"><Link className="team-cell team-link" to={`/equipo/${r.id}`}><Crest team={teamMap[r.id]} size={26} /><span className="nm">{teamMap[r.id]?.name}</span></Link></td>
               <td className="tabular">{r.pj}</td>
               <td className="tabular hide-sm">{r.g}</td><td className="tabular hide-sm">{r.e}</td><td className="tabular hide-sm">{r.p}</td>
               <td className="tabular hide-sm">{r.gf}</td><td className="tabular hide-sm">{r.gc}</td>
@@ -55,7 +56,7 @@ export function GroupTables({ groups, teamMap }) {
                 {groups[gk].map((r, i) => (
                   <tr key={r.id} className={i < 2 ? 'pos-q' : ''}>
                     <td><span className="pos-n">{i + 1}</span></td>
-                    <td className="team"><div className="team-cell"><Crest team={teamMap[r.id]} size={24} /><span className="nm">{teamMap[r.id]?.name}</span></div></td>
+                    <td className="team"><Link className="team-cell team-link" to={`/equipo/${r.id}`}><Crest team={teamMap[r.id]} size={24} /><span className="nm">{teamMap[r.id]?.name}</span></Link></td>
                     <td className="tabular">{r.pj}</td><td className="tabular">{fmtDif(dif(r))}</td><td><span className="pts">{r.pts}</span></td>
                   </tr>
                 ))}

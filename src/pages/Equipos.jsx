@@ -1,4 +1,5 @@
 // src/pages/Equipos.jsx
+import { Link } from 'react-router-dom';
 import { useStore } from '../store/AppStore';
 import { standings } from '../lib/compute';
 import Crest from '../components/Crest';
@@ -17,11 +18,11 @@ export default function Equipos() {
           {teams.map((t) => {
             const r = recById[t.id];
             return (
-              <div className="team-card" key={t.id}>
+              <Link className="team-card" to={`/equipo/${t.id}`} key={t.id}>
                 <Crest team={t} size={54} />
                 <div className="nm">{t.name}</div>
                 <div className="rec tabular">{r ? `${r.g}G · ${r.e}E · ${r.p}P` : '—'}</div>
-              </div>
+              </Link>
             );
           })}
         </div>

@@ -10,6 +10,7 @@ const NAV = [
   ['equipos', 'Equipos', 'shield'],
   ['jugadores', 'Jugadores', 'user'],
   ['resultados', 'Resultados', 'ball'],
+  ['notas', 'Notas', 'news'],
 ];
 
 export function RequireAdmin({ children }) {

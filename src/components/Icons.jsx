@@ -33,4 +33,5 @@ export const icons = {
   user: (s) => <svg width={s} height={s} viewBox="0 0 24 24" {...base}><circle cx="12" cy="8" r="3.4" /><path d="M5 20a7 7 0 0 1 14 0" /></svg>,
   ball: (s) => <svg width={s} height={s} viewBox="0 0 24 24" {...base}><circle cx="12" cy="12" r="9" /><path d="M12 7l4 3-1.5 5h-5L8 10l4-3Z" /></svg>,
   cup: (s) => <Trophy size={s} />,
+  news: (s) => <svg width={s} height={s} viewBox="0 0 24 24" {...base}><path d="M4 5h13v14H5a2 2 0 0 1-2-2V7M17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 17h4" /></svg>,
 };

@@ -76,3 +76,27 @@ export function fixture(state, compId) {
 export function teamMap(state) {
   const m = {}; state.teams.forEach((t) => (m[t.id] = t)); return m;
 }
+
+// Goles por jugador. compId null = todas las competencias.
+export function playerGoals(state, compId = null) {
+  const map = {};
+  state.matches.forEach((m) => {
+    if (m.status !== 'played') return;
+    if (compId && m.compId !== compId) return;
+    (m.scorers || []).forEach((s) => { map[s.playerId] = (map[s.playerId] || 0) + s.count; });
+  });
+  return map;
+}
+
+// Últimos partidos jugados de un equipo en una competencia.
+export function teamForm(state, compId, teamId, n = 5) {
+  return fixture(state, compId)
+    .filter((m) => m.status === 'played' && (m.homeId === teamId || m.awayId === teamId))
+    .slice(-n)
+    .map((m) => {
+      const home = m.homeId === teamId;
+      const gf = home ? m.homeGoals : m.awayGoals;
+      const gc = home ? m.awayGoals : m.homeGoals;
+      return { opp: home ? m.awayId : m.homeId, home, gf, gc, res: gf > gc ? 'w' : gf < gc ? 'l' : 'd' };
+    });
+}

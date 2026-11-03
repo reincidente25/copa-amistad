@@ -1,7 +1,7 @@
 // src/pages/Home.jsx
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/AppStore';
-import { NEWS, CAT_ORDER, CAT_TITLES, STATUS_LABEL } from '../data/mock';
+import { CAT_ORDER, CAT_TITLES, STATUS_LABEL } from '../data/mock';
 import { teamMap, fixture } from '../lib/compute';
 import Crest from '../components/Crest';
 import { Trophy, Arrow } from '../components/Icons';
@@ -19,6 +19,9 @@ export default function Home() {
   const { data } = useStore();
   const tm = teamMap(data);
   const pibes = tm.pibes, potrero = tm.potrero;
+
+  const featured = data.news.find((n) => n.feat) || data.news[0];
+  const restNews = data.news.filter((n) => n !== featured).slice(0, 4);
 
   const relMatches = fixture(data, 'clausura').filter((m) => m.status !== 'played').slice(0, 8);
   const t1 = relMatches.slice(0, 4), t2 = relMatches.slice(4, 8);
@@ -103,8 +106,8 @@ export default function Home() {
         <div className="wrap">
           <div className="sec-head"><div><div className="eyebrow">Al día</div><h2>Últimas noticias</h2></div></div>
           <div className="news-grid">
-            <div className="news-col"><NewsCard n={NEWS[0]} /></div>
-            <div className="news-col small">{NEWS.slice(1).map((n) => <NewsCard key={n.id} n={n} />)}</div>
+            <div className="news-col">{featured && <NewsCard n={{ ...featured, feat: true }} />}</div>
+            <div className="news-col small">{restNews.map((n) => <NewsCard key={n.id} n={n} />)}</div>
           </div>
         </div>
       </section>

@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Competition from './pages/Competition';
 import Historicos from './pages/Historicos';
 import Equipos from './pages/Equipos';
+import TeamDetail from './pages/TeamDetail';
 
 import AdminLayout, { RequireAdmin } from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -16,6 +17,7 @@ import AdminCompetencias from './pages/admin/AdminCompetencias';
 import AdminEquipos from './pages/admin/AdminEquipos';
 import AdminJugadores from './pages/admin/AdminJugadores';
 import AdminResultados from './pages/admin/AdminResultados';
+import AdminNotas from './pages/admin/AdminNotas';
 
 export default function App() {
   return (
@@ -29,6 +31,7 @@ export default function App() {
               <Route path="competencia/:id" element={<Competition />} />
               <Route path="historicos" element={<Historicos />} />
               <Route path="equipos" element={<Equipos />} />
+              <Route path="equipo/:id" element={<TeamDetail />} />
             </Route>
 
             {/* Administración */}
@@ -39,6 +42,7 @@ export default function App() {
               <Route path="equipos" element={<AdminEquipos />} />
               <Route path="jugadores" element={<AdminJugadores />} />
               <Route path="resultados" element={<AdminResultados />} />
+              <Route path="notas" element={<AdminNotas />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

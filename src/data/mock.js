@@ -153,5 +153,6 @@ export function buildSeed() {
   const competitions = COMPETITIONS.map((c) => ({ ...c }));
   let matches = [];
   competitions.forEach((c) => { matches = matches.concat(generateMatches(c, teams, players)); });
-  return { teams, players, competitions, matches };
+  const news = NEWS.map((n) => ({ ...n }));
+  return { teams, players, competitions, matches, news };
 }

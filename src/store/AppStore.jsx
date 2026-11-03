@@ -2,7 +2,7 @@
 // Estado global mock (equipos, jugadores, competencias, partidos) con persistencia en localStorage.
 // En producción esto se reemplaza por servicios de Firestore.
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { buildSeed, generateMatches, uid } from '../data/mock';
+import { buildSeed, generateMatches, uid, NEWS } from '../data/mock';
 
 const KEY = 'copa-amistad:data:v1';
 const AppCtx = createContext(null);
@@ -12,7 +12,10 @@ function load() {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.teams && parsed.competitions) return parsed;
+      if (parsed && parsed.teams && parsed.competitions) {
+        if (!parsed.news) parsed.news = NEWS.map((n) => ({ ...n }));
+        return parsed;
+      }
     }
   } catch { /* ignora */ }
   return buildSeed();
@@ -56,6 +59,17 @@ export function AppStoreProvider({ children }) {
       competitions: d.competitions.filter((c) => c.id !== id),
       matches: d.matches.filter((m) => m.compId !== id),
     })),
+
+    // Notas / noticias
+    addNote: (n) => setData((d) => ({
+      ...d,
+      news: [{ id: uid(), wm: (n.cat || 'N')[0].toUpperCase(), feat: false, ...n }, ...d.news],
+    })),
+    updateNote: (id, patch) => setData((d) => ({
+      ...d,
+      news: d.news.map((n) => (n.id === id ? { ...n, ...patch } : n)),
+    })),
+    deleteNote: (id) => setData((d) => ({ ...d, news: d.news.filter((n) => n.id !== id) })),
 
     // Resultados
     saveResult: (matchId, homeGoals, awayGoals, scorers) => setData((d) => ({

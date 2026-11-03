@@ -72,7 +72,7 @@ export default function AdminResultados() {
 
       <div className="admin-head sub"><h2>Pendientes <span className="count">{pending.length}</span></h2></div>
       {pending.length
-        ? pending.map((m) => <MatchEditor key={m.id} match={m} tm={tm} players={data.players} onSave={saveResult} />)
+        ? <div className="res-list">{pending.map((m) => <MatchEditor key={m.id} match={m} tm={tm} players={data.players} onSave={saveResult} />)}</div>
         : <div className="empty-card">No quedan partidos pendientes en esta competencia.</div>}
 
       {played.length > 0 && (
