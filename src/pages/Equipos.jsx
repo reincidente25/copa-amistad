@@ -1,12 +1,14 @@
 // src/pages/Equipos.jsx
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/AppStore';
-import { standings } from '../lib/compute';
+import { useSeason } from '../store/Season';
+import { standings, compByBase } from '../lib/compute';
 import Crest from '../components/Crest';
 
 export default function Equipos() {
   const { data } = useStore();
-  const rows = standings(data, 'clausura');
+  const { season } = useSeason();
+  const rows = standings(data, compByBase(data, 'clausura', season).id);
   const recById = {}; rows.forEach((r) => (recById[r.id] = r));
   const teams = data.teams.slice().sort((a, b) => a.name.localeCompare(b.name));
 

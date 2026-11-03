@@ -65,7 +65,7 @@ export default function AdminResultados() {
       <div className="admin-card" style={{ marginBottom: 20 }}>
         <div className="admin-card-head"><h2>Competencia</h2>
           <select className="mini-select" value={compId} onChange={(e) => setCompId(e.target.value)}>
-            {data.competitions.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            {data.competitions.map((c) => <option key={c.id} value={c.id}>{c.name} · {c.season}</option>)}
           </select>
         </div>
       </div>

@@ -83,6 +83,7 @@ export default function Competition() {
           <Link className="back" to="/"><Back /> Volver al inicio</Link>
           <div className="title"><Trophy size={40} color="rgba(255,255,255,.9)" /><h1>{c.name}</h1></div>
           <div className="meta">
+            <span className="pill gold">Temporada {c.season}</span>
             <span className="pill">{c.win}</span><span className="pill">{STATUS_LABEL[c.status]}</span><span className="pill">{kindPill}</span>
             {hasJornadas && <span className="pill">{c.months.length} jornadas</span>}
           </div>

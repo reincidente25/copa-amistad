@@ -1,8 +1,9 @@
 // src/pages/Home.jsx
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/AppStore';
-import { CAT_ORDER, CAT_TITLES, STATUS_LABEL } from '../data/mock';
-import { teamMap, fixture } from '../lib/compute';
+import { CAT_ORDER, CAT_TITLES, STATUS_LABEL, CURRENT_SEASON } from '../data/mock';
+import { teamMap, fixture, compByBase } from '../lib/compute';
+import { useSeason } from '../store/Season';
 import Crest from '../components/Crest';
 import { Trophy, Arrow } from '../components/Icons';
 import { NewsCard } from '../components/Displays';
@@ -17,13 +18,16 @@ const HOW = [
 
 export default function Home() {
   const { data } = useStore();
+  const { season } = useSeason();
   const tm = teamMap(data);
   const pibes = tm.pibes, potrero = tm.potrero;
+  const curCl = compByBase(data, 'clausura', CURRENT_SEASON);
+  const seasonComps = data.competitions.filter((c) => c.season === season);
 
   const featured = data.news.find((n) => n.feat) || data.news[0];
   const restNews = data.news.filter((n) => n !== featured).slice(0, 4);
 
-  const relMatches = fixture(data, 'clausura').filter((m) => m.status !== 'played').slice(0, 8);
+  const relMatches = fixture(data, curCl.id).filter((m) => m.status !== 'played').slice(0, 8);
   const t1 = relMatches.slice(0, 4), t2 = relMatches.slice(4, 8);
   const relRow = (m) => (
     <div className="match-row" key={m.id}>
@@ -54,7 +58,7 @@ export default function Home() {
               <span>📅 <b>2 domingos</b>/mes</span><span>⚡ <b>16 equipos</b> · 2 canchas</span><span>🔄 Tablas <b>quincenales</b></span>
             </div>
             <div className="cta-row">
-              <Link className="btn btn-accent" to="/competencia/clausura">Ver la Clausura <Arrow /></Link>
+              <Link className="btn btn-accent" to={`/competencia/${curCl.id}`}>Ver la Clausura <Arrow /></Link>
               <a className="btn btn-ghost" href="#competencias">Las competencias</a>
             </div>
           </div>
@@ -81,9 +85,9 @@ export default function Home() {
 
       <section className="band alt" id="competencias">
         <div className="wrap">
-          <div className="sec-head"><div><div className="eyebrow">El calendario</div><h2>Competencias</h2><p>Entrá a cada una para ver su tabla, goleadores y resultados.</p></div></div>
+          <div className="sec-head"><div><div className="eyebrow">El calendario · {season}</div><h2>Competencias</h2><p>Entrá a cada una para ver su tabla, goleadores y resultados.</p></div></div>
           {CAT_ORDER.map((cat) => {
-            const items = data.competitions.filter((c) => c.cat === cat);
+            const items = seasonComps.filter((c) => c.cat === cat);
             if (!items.length) return null;
             return (
               <div className="comp-group" key={cat}>

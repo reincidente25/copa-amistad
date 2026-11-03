@@ -2,9 +2,9 @@
 // Estado global mock (equipos, jugadores, competencias, partidos) con persistencia en localStorage.
 // En producción esto se reemplaza por servicios de Firestore.
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { buildSeed, generateMatches, uid, NEWS } from '../data/mock';
+import { buildSeed, generateMatches, uid, NEWS, CURRENT_SEASON } from '../data/mock';
 
-const KEY = 'copa-amistad:data:v2';
+const KEY = 'copa-amistad:data:v3';
 const AppCtx = createContext(null);
 
 function load() {
@@ -50,7 +50,7 @@ export function AppStoreProvider({ children }) {
 
     // Competencias
     addCompetition: (c) => setData((d) => {
-      const comp = { id: uid(), played: 0, champ: false, ...c };
+      const comp = { id: uid(), played: 0, champ: false, season: CURRENT_SEASON, base: uid(), ...c };
       const matches = generateMatches(comp, d.teams, d.players);
       return { ...d, competitions: [...d.competitions, comp], matches: [...d.matches, ...matches] };
     }),

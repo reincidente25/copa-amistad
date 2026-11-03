@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppStoreProvider } from './store/AppStore';
 import { MockAuthProvider } from './store/MockAuth';
+import { SeasonProvider } from './store/Season';
 
 import SiteLayout from './components/SiteLayout';
 import Home from './pages/Home';
@@ -22,6 +23,7 @@ import AdminNotas from './pages/admin/AdminNotas';
 export default function App() {
   return (
     <AppStoreProvider>
+      <SeasonProvider>
       <MockAuthProvider>
         <BrowserRouter>
           <Routes>
@@ -49,6 +51,7 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </MockAuthProvider>
+      </SeasonProvider>
     </AppStoreProvider>
   );
 }

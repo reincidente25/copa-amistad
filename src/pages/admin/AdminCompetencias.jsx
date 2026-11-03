@@ -58,7 +58,7 @@ export default function AdminCompetencias() {
             {data.competitions.map((c) => (
               <div className="list-row" key={c.id}>
                 <span className="comp-chip" style={{ background: `linear-gradient(135deg,${c.color},${c.c2})` }}><Trophy size={18} color="#fff" /></span>
-                <div className="lr-main"><div className="lr-title">{c.name}</div><div className="lr-sub">{CAT_TITLES[c.cat].split(' ·')[0]} · {c.win || 's/fecha'} · {STATUS_LABEL[c.status]}</div></div>
+                <div className="lr-main"><div className="lr-title">{c.name} <span className="yr-tag">{c.season}</span></div><div className="lr-sub">{CAT_TITLES[c.cat].split(' ·')[0]} · {c.win || 's/fecha'} · {STATUS_LABEL[c.status]}</div></div>
                 <button className="icon-btn danger" title="Eliminar" onClick={() => { if (confirm(`¿Eliminar ${c.name} y sus partidos?`)) deleteCompetition(c.id); }}><Trash /></button>
               </div>
             ))}

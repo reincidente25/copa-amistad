@@ -56,9 +56,27 @@ export function standings(state, compId, teamIds, round) {
   return tally(ms, ids);
 }
 
-// Tabla anual: suma de todas las competencias del año.
-export function annualStandings(state) {
-  return tally(state.matches, state.teams.map((t) => t.id));
+// Tabla anual: suma de todas las competencias de una temporada.
+export function annualStandings(state, season) {
+  const ids = new Set(state.competitions.filter((c) => c.season === season).map((c) => c.id));
+  return tally(state.matches.filter((m) => ids.has(m.compId)), state.teams.map((t) => t.id));
+}
+
+// Competencia por su base (ej. 'clausura') dentro de una temporada.
+export function compByBase(state, base, season) {
+  return state.competitions.find((c) => c.base === base && c.season === season)
+    || state.competitions.find((c) => c.base === base);
+}
+
+// Goles por jugador en toda una temporada (todas las competencias).
+export function playerSeasonGoals(state, season) {
+  const ids = new Set(state.competitions.filter((c) => c.season === season).map((c) => c.id));
+  const map = {};
+  state.matches.forEach((m) => {
+    if (m.status !== 'played' || !ids.has(m.compId)) return;
+    (m.scorers || []).forEach((s) => { map[s.playerId] = (map[s.playerId] || 0) + s.count; });
+  });
+  return map;
 }
 
 export function groupStandings(state, compId) {

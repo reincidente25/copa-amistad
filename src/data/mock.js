@@ -186,12 +186,34 @@ export function generateMatches(comp, teams, players) {
   return matches;
 }
 
+// Temporadas disponibles (más reciente primero). La actual está "en curso".
+export const CURRENT_SEASON = 2026;
+export const SEASONS = [2026, 2025];
+
+// Instancia de una competencia para una temporada dada.
+function seasonInstance(base, year) {
+  const past = year !== CURRENT_SEASON;
+  const fullPlayed = base.months ? base.months.length : 3; // copas: 3 fechas de grupos
+  return {
+    ...base,
+    base: base.id,
+    season: year,
+    id: `${base.id}-${year}`,
+    status: past ? 'fin' : base.status,
+    played: past ? fullPlayed : base.played,
+    champ: past ? true : base.champ,
+  };
+}
+
 export function buildSeed() {
   const teams = TEAMS.map((t) => ({ ...t }));
   const players = [];
   TEAMS.forEach((t) => (PLAYER_NAMES[t.id] || []).forEach((name, i) =>
     players.push({ id: `${t.id}-p${i + 1}`, name, teamId: t.id })));
-  const competitions = COMPETITIONS.map((c) => ({ ...c }));
+
+  const competitions = [];
+  SEASONS.forEach((year) => COMPETITIONS.forEach((b) => competitions.push(seasonInstance(b, year))));
+
   let matches = [];
   competitions.forEach((c) => { matches = matches.concat(generateMatches(c, teams, players)); });
   const news = NEWS.map((n) => ({ ...n }));

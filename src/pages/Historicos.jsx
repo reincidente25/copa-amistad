@@ -1,6 +1,7 @@
 // src/pages/Historicos.jsx
 import { useState } from 'react';
 import { useStore } from '../store/AppStore';
+import { useSeason } from '../store/Season';
 import { teamMap, annualStandings } from '../lib/compute';
 import { HIST_PUNTOS, HIST_GOL, HIST_TIT } from '../data/mock';
 import { StandingsTable } from '../components/Displays';
@@ -15,6 +16,7 @@ function Leader({ children }) { return <div className="hist-leader">{children}</
 
 export default function Historicos() {
   const { data } = useStore();
+  const { season } = useSeason();
   const tm = teamMap(data);
   const [sub, setSub] = useState('puntos');
 
@@ -27,10 +29,10 @@ export default function Historicos() {
       <section className="band">
         <div className="wrap">
           <div className="sec-head">
-            <div><div className="eyebrow">Temporada 2026</div><h2>Tabla anual</h2>
-              <p>Puntos acumulados en todas las competencias del año (ligas y copas).</p></div>
+            <div><div className="eyebrow">Temporada {season}</div><h2>Tabla anual {season}</h2>
+              <p>Puntos acumulados en todas las competencias del año (ligas y copas). Cambiá el año desde el selector del menú.</p></div>
           </div>
-          <StandingsTable rows={annualStandings(data)} teamMap={tm} />
+          <StandingsTable rows={annualStandings(data, season)} teamMap={tm} />
         </div>
       </section>
 

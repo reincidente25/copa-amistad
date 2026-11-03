@@ -1,38 +1,41 @@
 // src/pages/TeamDetail.jsx
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useStore } from '../store/AppStore';
+import { useSeason } from '../store/Season';
 import { HIST_TIT } from '../data/mock';
-import { teamMap, standings, playerGoals, teamForm } from '../lib/compute';
+import { teamMap, standings, playerGoals, playerSeasonGoals, teamForm, compByBase } from '../lib/compute';
 import Crest from '../components/Crest';
 import { Back } from '../components/Icons';
 
 export default function TeamDetail() {
   const { id } = useParams();
   const { data } = useStore();
+  const { season } = useSeason();
   const team = data.teams.find((t) => t.id === id);
   if (!team) return <Navigate to="/equipos" replace />;
 
   const tm = teamMap(data);
-  const rows = standings(data, 'clausura');
+  const cl = compByBase(data, 'clausura', season);
+  const rows = standings(data, cl.id);
   const row = rows.find((r) => r.id === id);
   const pos = row ? rows.indexOf(row) + 1 : null;
 
-  const golTotal = playerGoals(data);
-  const golClausura = playerGoals(data, 'clausura');
+  const golTotal = playerSeasonGoals(data, season);
+  const golClausura = playerGoals(data, cl.id);
   const squad = data.players.filter((p) => p.teamId === id)
     .map((p) => ({ ...p, total: golTotal[p.id] || 0, clausura: golClausura[p.id] || 0 }))
     .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
   const squadGoals = squad.reduce((s, p) => s + p.total, 0);
   const tt = HIST_TIT.find((t) => t.id === id);
   const titles = tt ? tt.apertura + tt.clausura + tt.copas : 0;
-  const form = teamForm(data, 'clausura', id, 6);
+  const form = teamForm(data, cl.id, id, 6);
 
   const stats = [
-    ['Posición', pos ? pos + 'º' : '—', 'Clausura'],
-    ['Puntos', row ? row.pts : 0, 'Clausura'],
+    ['Posición', pos ? pos + 'º' : '—', `Clausura ${season}`],
+    ['Puntos', row ? row.pts : 0, `Clausura ${season}`],
     ['Partidos', row ? `${row.g}-${row.e}-${row.p}` : '0-0-0', 'G-E-P'],
     ['Dif. de gol', row ? (row.gf - row.gc > 0 ? '+' : '') + (row.gf - row.gc) : 0, `${row ? row.gf : 0} GF · ${row ? row.gc : 0} GC`],
-    ['Goles del plantel', squadGoals, 'Todas las competencias'],
+    ['Goles del plantel', squadGoals, `Temporada ${season}`],
     ['Títulos', titles, 'Históricos'],
   ];
 
@@ -47,7 +50,7 @@ export default function TeamDetail() {
         </svg>
         <div className="wrap">
           <Link className="back" to="/equipos"><Back /> Volver a equipos</Link>
-          <div className="td-title"><Crest team={team} size={64} /><div><h1>{team.name}</h1><div className="td-sub">{pos ? `${pos}.º en la Liga Clausura` : 'Copa Amistad 2026'}</div></div></div>
+          <div className="td-title"><Crest team={team} size={64} /><div><h1>{team.name}</h1><div className="td-sub">{pos ? `${pos}.º en la Liga Clausura ${season}` : `Copa Amistad ${season}`}</div></div></div>
         </div>
       </section>
 
@@ -82,7 +85,7 @@ export default function TeamDetail() {
             </div>
 
             <div>
-              <div className="sec-head sm"><div><h2>Campaña</h2></div><span className="muted-note">Clausura</span></div>
+              <div className="sec-head sm"><div><h2>Campaña</h2></div><span className="muted-note">Clausura {season}</span></div>
               <div className="pos-wrap campaign">
                 {form.length ? form.slice().reverse().map((c, i) => (
                   <div className="camp-row" key={i}>
