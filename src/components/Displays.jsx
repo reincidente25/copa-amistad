@@ -17,28 +17,66 @@ export function ChampBanner({ team, label }) {
   );
 }
 
-export function StandingsTable({ rows, teamMap, qCut = 0 }) {
+export function StandingsTable({ rows, teamMap, qCut = 0, classif = null }) {
+  const zoneOf = (pos) => classif && classif.find((z) => pos >= z.from && pos <= z.to);
   return (
-    <div className="pos-wrap">
-      <table className="stand">
-        <thead><tr>
-          <th style={{ width: 48 }}>#</th><th className="team">Equipo</th><th>PJ</th>
-          <th className="hide-sm">G</th><th className="hide-sm">E</th><th className="hide-sm">P</th>
-          <th className="hide-sm">GF</th><th className="hide-sm">GC</th><th>DIF</th><th>Pts</th>
-        </tr></thead>
-        <tbody>
-          {rows.map((r, i) => (
-            <tr key={r.id} className={i < qCut ? (i === 0 ? 'pos-q2' : 'pos-q') : ''}>
-              <td><span className="pos-n">{i + 1}</span></td>
-              <td className="team"><Link className="team-cell team-link" to={`/equipo/${r.id}`}><Crest team={teamMap[r.id]} size={26} /><span className="nm">{teamMap[r.id]?.name}</span></Link></td>
-              <td className="tabular">{r.pj}</td>
-              <td className="tabular hide-sm">{r.g}</td><td className="tabular hide-sm">{r.e}</td><td className="tabular hide-sm">{r.p}</td>
-              <td className="tabular hide-sm">{r.gf}</td><td className="tabular hide-sm">{r.gc}</td>
-              <td className="tabular">{fmtDif(dif(r))}</td><td><span className="pts">{r.pts}</span></td>
-            </tr>
+    <>
+      <div className="pos-wrap">
+        <table className="stand">
+          <thead><tr>
+            <th style={{ width: 48 }}>#</th><th className="team">Equipo</th><th>PJ</th>
+            <th className="hide-sm">G</th><th className="hide-sm">E</th><th className="hide-sm">P</th>
+            <th className="hide-sm">GF</th><th className="hide-sm">GC</th><th>DIF</th><th>Pts</th>
+          </tr></thead>
+          <tbody>
+            {rows.map((r, i) => {
+              const z = zoneOf(i + 1);
+              const cls = classif ? '' : (i < qCut ? (i === 0 ? 'pos-q2' : 'pos-q') : '');
+              return (
+                <tr key={r.id} className={cls} style={z ? { boxShadow: `inset 4px 0 0 ${z.color}` } : undefined}>
+                  <td><span className="pos-n" style={z ? { color: z.color } : undefined}>{i + 1}</span></td>
+                  <td className="team"><Link className="team-cell team-link" to={`/equipo/${r.id}`}><Crest team={teamMap[r.id]} size={26} /><span className="nm">{teamMap[r.id]?.name}</span></Link></td>
+                  <td className="tabular">{r.pj}</td>
+                  <td className="tabular hide-sm">{r.g}</td><td className="tabular hide-sm">{r.e}</td><td className="tabular hide-sm">{r.p}</td>
+                  <td className="tabular hide-sm">{r.gf}</td><td className="tabular hide-sm">{r.gc}</td>
+                  <td className="tabular">{fmtDif(dif(r))}</td><td><span className="pts">{r.pts}</span></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {classif && (
+        <div className="clasif-legend">
+          {classif.map((z) => (
+            <span className="cl-item" key={z.comp}><i style={{ background: z.color }} />{z.from}.º–{z.to}.º · {z.label}</span>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
+    </>
+  );
+}
+
+export function MatchRow({ m, teamMap }) {
+  return (
+    <div className="match-row">
+      <div className="s h"><span className="nm">{teamMap[m.homeId]?.name}</span><Crest team={teamMap[m.homeId]} size={26} /></div>
+      {m.status === 'played'
+        ? <div className="sc">{m.homeGoals}–{m.awayGoals}</div>
+        : <div className="sc vs">VS<span className="time">{String(9 + (m.turno || 1)).padStart(2, '0')}:00</span></div>}
+      <div className="s"><Crest team={teamMap[m.awayId]} size={26} /><span className="nm">{teamMap[m.awayId]?.name}</span></div>
+    </div>
+  );
+}
+
+export function JornadaResults({ month, round, played, matches, teamMap }) {
+  return (
+    <div className="jornada-block">
+      <div className="jornada-head">
+        <h4>Jornada {round} · {month}</h4>
+        <span className={`chip ${played ? 'played' : 'next'}`}>{played ? 'Jugada' : 'Pendiente'}</span>
+      </div>
+      {matches.map((m) => <MatchRow key={m.id} m={m} teamMap={teamMap} />)}
     </div>
   );
 }
@@ -88,19 +126,10 @@ export function ScorersList({ list, teamMap }) {
 export function MatchList({ matches, teamMap }) {
   const played = matches.filter((m) => m.status === 'played');
   const next = matches.filter((m) => m.status !== 'played');
-  const row = (m) => (
-    <div className="match-row" key={m.id}>
-      <div className="s h"><span className="nm">{teamMap[m.homeId]?.name}</span><Crest team={teamMap[m.homeId]} size={26} /></div>
-      {m.status === 'played'
-        ? <div className="sc">{m.homeGoals}–{m.awayGoals}</div>
-        : <div className="sc vs">VS<span className="time">{String(9 + (m.turno || 1)).padStart(2, '0')}:00</span></div>}
-      <div className="s"><Crest team={teamMap[m.awayId]} size={26} /><span className="nm">{teamMap[m.awayId]?.name}</span></div>
-    </div>
-  );
   return (
     <div>
-      {played.length > 0 && <><div className="fecha-label">Jugados</div>{played.slice(-8).map(row)}</>}
-      {next.length > 0 && <><div className="fecha-label">Próximos</div>{next.slice(0, 6).map(row)}</>}
+      {played.length > 0 && <><div className="fecha-label">Jugados</div>{played.slice(-8).map((m) => <MatchRow key={m.id} m={m} teamMap={teamMap} />)}</>}
+      {next.length > 0 && <><div className="fecha-label">Próximos</div>{next.slice(0, 6).map((m) => <MatchRow key={m.id} m={m} teamMap={teamMap} />)}</>}
       {matches.length === 0 && <div className="comp-note">No hay partidos cargados para esta competencia.</div>}
     </div>
   );

@@ -28,12 +28,11 @@ function emptyRow(id) {
   return { id, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, pts: 0 };
 }
 
-export function standings(state, compId, teamIds) {
+function tally(matchArr, ids) {
   const rows = {};
-  (teamIds || participantsOf(state, compId)).forEach((id) => (rows[id] = emptyRow(id)));
-  matchesOf(state, compId).forEach((m) => {
+  ids.forEach((id) => (rows[id] = emptyRow(id)));
+  matchArr.forEach((m) => {
     if (m.status !== 'played' || m.homeGoals == null) return;
-    if (teamIds && !(rows[m.homeId] && rows[m.awayId])) return;
     const h = rows[m.homeId], a = rows[m.awayId];
     if (!h || !a) return;
     h.pj++; a.pj++;
@@ -47,6 +46,20 @@ export function standings(state, compId, teamIds) {
     y.pts - x.pts || (y.gf - y.gc) - (x.gf - x.gc) || y.gf - x.gf);
 }
 
+// round (jornada/mes) opcional: filtra a esa jornada; si no, tabla acumulada.
+export function standings(state, compId, teamIds, round) {
+  let ms = matchesOf(state, compId);
+  if (round) ms = ms.filter((m) => m.round === round);
+  const ids = teamIds
+    || (round ? [...new Set(ms.flatMap((m) => [m.homeId, m.awayId]))] : participantsOf(state, compId));
+  return tally(ms, ids);
+}
+
+// Tabla anual: suma de todas las competencias del año.
+export function annualStandings(state) {
+  return tally(state.matches, state.teams.map((t) => t.id));
+}
+
 export function groupStandings(state, compId) {
   const groups = groupsOf(state, compId);
   const out = {};
@@ -54,10 +67,11 @@ export function groupStandings(state, compId) {
   return out;
 }
 
-export function scorers(state, compId) {
+export function scorers(state, compId, round) {
   const byPlayer = {};
   matchesOf(state, compId).forEach((m) => {
     if (m.status !== 'played') return;
+    if (round && m.round !== round) return;
     (m.scorers || []).forEach((s) => { byPlayer[s.playerId] = (byPlayer[s.playerId] || 0) + s.count; });
   });
   const playerMap = {}; state.players.forEach((p) => (playerMap[p.id] = p));
@@ -67,10 +81,10 @@ export function scorers(state, compId) {
     .sort((a, b) => b.goals - a.goals);
 }
 
-export function fixture(state, compId) {
-  return matchesOf(state, compId)
-    .slice()
-    .sort((a, b) => a.round - b.round || a.turno - b.turno);
+export function fixture(state, compId, round) {
+  let ms = matchesOf(state, compId).slice().sort((a, b) => a.round - b.round || a.turno - b.turno);
+  if (round) ms = ms.filter((m) => m.round === round);
+  return ms;
 }
 
 export function teamMap(state) {

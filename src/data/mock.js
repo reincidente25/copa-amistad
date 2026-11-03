@@ -27,14 +27,20 @@ const PLAYER_NAMES = {
   union:   ['N. Cáceres', 'V. Herrera', 'L. Mansilla'],
 };
 
+// Zonas de clasificación a copas según la posición en la tabla general (ASUNCIÓN a confirmar).
+const CLASIF = [
+  { from: 1, to: 4, comp: 'libertadores', label: 'Copa Libertadores', color: '#c8961f' },
+  { from: 5, to: 8, comp: 'sudamericana', label: 'Copa Sudamericana', color: '#b4452f' },
+];
+
 export const COMPETITIONS = [
-  { id: 'clausura',    name: 'Liga Clausura',     short: 'Clausura',     cat: 'liga',     win: 'Jul – Nov', status: 'curso', color: '#13314b', c2: '#0a1826', champ: false, played: 4 },
-  { id: 'apertura',    name: 'Liga Apertura',     short: 'Apertura',     cat: 'liga',     win: 'Feb – Jun', status: 'fin',   color: '#13314b', c2: '#0a1826', champ: true,  played: 9 },
+  { id: 'clausura',    name: 'Liga Clausura',     short: 'Clausura',     cat: 'liga',     win: 'Jul – Nov', status: 'curso', color: '#13314b', c2: '#0a1826', champ: false, played: 4, months: ['Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre'], classif: CLASIF },
+  { id: 'apertura',    name: 'Liga Apertura',     short: 'Apertura',     cat: 'liga',     win: 'Feb – Jun', status: 'fin',   color: '#13314b', c2: '#0a1826', champ: true,  played: 5, months: ['Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'], classif: CLASIF },
   { id: 'argentina',   name: 'Copa Argentina',    short: 'C. Argentina', cat: 'copa',     win: 'Feb – Jun', status: 'fin',   color: '#1e4e8c', c2: '#11294d', champ: true,  played: 3 },
   { id: 'libertadores',name: 'Copa Libertadores', short: 'Libertadores', cat: 'copa',     win: 'Jul – Oct', status: 'curso', color: '#c8961f', c2: '#8a6410', champ: false, played: 2 },
   { id: 'sudamericana',name: 'Copa Sudamericana', short: 'Sudamericana', cat: 'copa',     win: 'Jul – Oct', status: 'curso', color: '#b4452f', c2: '#7a2a1c', champ: false, played: 2 },
   { id: 'mundo',       name: 'Copa del Mundo',    short: 'Mundo',        cat: 'copa',     win: 'Diciembre', status: 'prox',  color: '#5b3a8c', c2: '#3a2459', champ: false, played: 0 },
-  { id: 'nacional',    name: 'Liga Nacional',     short: 'Nacional',     cat: 'nacional', win: 'Todo el año · 2.ª fecha', status: 'curso', color: '#0e6b6b', c2: '#0a4747', champ: false, played: 3 },
+  { id: 'nacional',    name: 'Liga Nacional',     short: 'Nacional',     cat: 'nacional', win: 'Todo el año · 2.ª fecha', status: 'curso', color: '#0e6b6b', c2: '#0a4747', champ: false, played: 3, months: ['Agosto', 'Septiembre', 'Octubre', 'Noviembre'] },
 ];
 
 export const NEWS = [
@@ -139,7 +145,8 @@ export function generateMatches(comp, teams, players) {
     });
   } else {
     const pool = comp.cat === 'nacional' ? ids.slice(0, 8) : ids;
-    const rounds = roundRobin(pool).slice(0, Math.max(comp.played + 2, 5));
+    const nJornadas = comp.months ? comp.months.length : Math.max(comp.played + 2, 5);
+    const rounds = roundRobin(pool).slice(0, nJornadas);
     rounds.forEach((pairs, r) => pairs.forEach(([h, g]) => matches.push(makeMatch(h, g, r + 1))));
   }
   return matches;

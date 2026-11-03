@@ -4,7 +4,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { buildSeed, generateMatches, uid, NEWS } from '../data/mock';
 
-const KEY = 'copa-amistad:data:v1';
+const KEY = 'copa-amistad:data:v2';
 const AppCtx = createContext(null);
 
 function load() {
