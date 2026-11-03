@@ -239,6 +239,16 @@ table.stand tbody tr:hover{background:var(--surface-2);}
 .hist .hrow .main .l2{font-size:12px;color:var(--muted);}
 .hist .hrow .val{font-family:var(--font-display);font-size:18px;}
 
+/* Destacado histórico */
+.hist-leader{display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,color-mix(in srgb,var(--gold) 20%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--gold) 45%,var(--border));border-radius:14px;padding:14px 18px;margin-bottom:16px;box-shadow:var(--shadow);}
+.hist-leader .hl-main{flex:1;min-width:0;}
+.hist-leader .hl-name{font-family:var(--font-cond);font-weight:700;font-size:20px;line-height:1.1;}
+.hist-leader .hl-sub{font-size:13px;color:var(--muted);}
+.hist-leader .hl-val{font-family:var(--font-display);font-size:34px;line-height:1;color:var(--gold-2);}
+.hist-leader .hl-val small{font-family:var(--font-body);font-size:13px;color:var(--muted);font-weight:500;margin-left:5px;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hist-leader .hl-val{color:var(--gold);}}
+:root[data-theme="dark"] .hist-leader .hl-val{color:var(--gold);}
+
 /* Equipos */
 .teams-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
 .team-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 12px;text-align:center;box-shadow:var(--shadow);transition:transform .15s,border-color .15s;}

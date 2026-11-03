@@ -23,7 +23,8 @@ export default function TeamDetail() {
     .map((p) => ({ ...p, total: golTotal[p.id] || 0, clausura: golClausura[p.id] || 0 }))
     .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
   const squadGoals = squad.reduce((s, p) => s + p.total, 0);
-  const titles = (HIST_TIT.find((t) => t[0] === id) || [])[1] || 0;
+  const tt = HIST_TIT.find((t) => t.id === id);
+  const titles = tt ? tt.apertura + tt.clausura + tt.copas : 0;
   const form = teamForm(data, 'clausura', id, 6);
 
   const stats = [

@@ -51,17 +51,51 @@ export const NEWS = [
   { id: 'n5', cat: 'Disciplina', wm: '!', date: '27 oct', title: 'Dos relámpagos de suspensión para Castro', excerpt: 'Real Potrero pierde a su defensor central.' },
 ];
 
+// Históricos detallados (acumulado de todas las temporadas). pts = g*3+e.
 export const HIST_PUNTOS = [
-  ['pibes', 412], ['norte', 388], ['racing', 356], ['central', 340],
-  ['union', 318], ['garage', 291], ['sur', 270], ['halcon', 244],
+  { id: 'pibes',   temp: 8, g: 128, e: 28, p: 54, gf: 505, gc: 320, tit: 7 },
+  { id: 'norte',   temp: 8, g: 118, e: 34, p: 58, gf: 470, gc: 348, tit: 5 },
+  { id: 'racing',  temp: 8, g: 106, e: 38, p: 66, gf: 441, gc: 372, tit: 3 },
+  { id: 'central', temp: 8, g: 102, e: 34, p: 74, gf: 430, gc: 395, tit: 2 },
+  { id: 'union',   temp: 7, g: 96,  e: 30, p: 59, gf: 388, gc: 360, tit: 0 },
+  { id: 'garage',  temp: 7, g: 86,  e: 33, p: 66, gf: 360, gc: 372, tit: 1 },
+  { id: 'sur',     temp: 6, g: 80,  e: 30, p: 50, gf: 330, gc: 300, tit: 1 },
+  { id: 'halcon',  temp: 6, g: 72,  e: 28, p: 60, gf: 300, gc: 318, tit: 0 },
+  { id: 'ferro',   temp: 4, g: 52,  e: 18, p: 35, gf: 210, gc: 190, tit: 0 },
+  { id: 'potrero', temp: 5, g: 44,  e: 20, p: 66, gf: 205, gc: 300, tit: 0 },
 ];
+
 export const HIST_GOL = [
-  ['M. Sosa', 'pibes', 148], ['D. Funes', 'norte', 121], ['R. Aquino', 'racing', 109],
-  ['L. Ferreyra', 'central', 97], ['G. Ojeda', 'garage', 90], ['H. Rivas', 'halcon', 76],
-  ['P. Molina', 'sur', 71], ['N. Cáceres', 'union', 64],
+  { name: 'M. Sosa',      team: 'pibes',   goles: 148, pj: 180, temp: 7 },
+  { name: 'D. Funes',     team: 'norte',   goles: 121, pj: 175, temp: 7 },
+  { name: 'R. Aquino',    team: 'racing',  goles: 109, pj: 170, temp: 7 },
+  { name: 'L. Ferreyra',  team: 'central', goles: 97,  pj: 165, temp: 6 },
+  { name: 'G. Ojeda',     team: 'garage',  goles: 90,  pj: 150, temp: 6 },
+  { name: 'H. Rivas',     team: 'halcon',  goles: 76,  pj: 140, temp: 6 },
+  { name: 'P. Molina',    team: 'sur',     goles: 71,  pj: 130, temp: 5 },
+  { name: 'N. Cáceres',   team: 'union',   goles: 64,  pj: 120, temp: 5 },
+  { name: 'J. Vera',      team: 'pibes',   goles: 58,  pj: 150, temp: 6 },
+  { name: 'E. Benítez',   team: 'ferro',   goles: 52,  pj: 100, temp: 4 },
+  { name: 'F. Díaz',      team: 'pibes',   goles: 49,  pj: 120, temp: 5 },
+  { name: 'C. Ibáñez',    team: 'norte',   goles: 44,  pj: 110, temp: 5 },
+  { name: 'S. Domínguez', team: 'potrero', goles: 41,  pj: 115, temp: 5 },
+  { name: 'A. Godoy',     team: 'central', goles: 38,  pj: 100, temp: 4 },
+  { name: 'T. Gómez',     team: 'racing',  goles: 35,  pj: 95,  temp: 4 },
+  { name: 'V. Herrera',   team: 'union',   goles: 31,  pj: 90,  temp: 4 },
 ];
+
+// Desglose de títulos por tipo de competencia.
 export const HIST_TIT = [
-  ['pibes', 7], ['norte', 5], ['racing', 3], ['central', 2], ['sur', 1], ['garage', 1],
+  { id: 'pibes',   apertura: 3, clausura: 2, copas: 2 },
+  { id: 'norte',   apertura: 1, clausura: 2, copas: 2 },
+  { id: 'racing',  apertura: 1, clausura: 1, copas: 1 },
+  { id: 'central', apertura: 1, clausura: 0, copas: 1 },
+  { id: 'garage',  apertura: 0, clausura: 1, copas: 0 },
+  { id: 'sur',     apertura: 0, clausura: 0, copas: 1 },
+  { id: 'union',   apertura: 0, clausura: 0, copas: 0 },
+  { id: 'halcon',  apertura: 0, clausura: 0, copas: 0 },
+  { id: 'ferro',   apertura: 0, clausura: 0, copas: 0 },
+  { id: 'potrero', apertura: 0, clausura: 0, copas: 0 },
 ];
 
 export const STATUS_LABEL = { curso: 'En curso', fin: 'Finalizada', prox: 'Próxima' };
