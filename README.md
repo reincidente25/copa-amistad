@@ -1,74 +1,57 @@
-# 🚀 React + Firebase Template
+# ⚽ Copa Amistad
 
-Template base para proyectos con React, Vite, Firebase y React Router.
+Sitio web de la liga **Copa Amistad**: un ecosistema de competencias de fútbol amateur
+(Liga Apertura/Clausura, copas con fase de grupos + playoffs, y Liga Nacional), con tablas,
+goleadores, resultados e históricos. Incluye un panel de administración.
+
+> **Estado:** front-end con **datos mock** (persistidos en el navegador). Todavía sin backend:
+> el siguiente paso es conectar Firebase/Firestore.
 
 ## Stack
 
-- **React 18** + **Vite 5**
-- **Firebase 10** (Auth + Firestore)
-- **React Router 6**
-- CSS por componente (sin frameworks)
+- **React 18** + **Vite 5** + **React Router 6**
+- CSS propio con variables (paleta del escudo: navy + dorado), sin frameworks
+- Tipografías: Anton (títulos) + Barlow / Barlow Condensed (Google Fonts)
 
 ## Estructura
 
 ```
 src/
-├── config/
-│   └── firebase.js          ← Inicialización de Firebase
-├── context/
-│   └── AuthContext.jsx       ← Auth global + useAuth hook
-├── components/
-│   ├── common/
-│   │   └── PrivateRoute.jsx  ← Protección de rutas
-│   └── layout/
-│       ├── Layout.jsx        ← Sidebar + header mobile
-│       └── Layout.css
+├── data/mock.js          ← equipos, jugadores, competencias, noticias + generador de fixture
+├── lib/compute.js        ← cálculos derivados (posiciones, goleadores, fixture)
+├── store/
+│   ├── AppStore.jsx       ← estado global mock + CRUD (persistido en localStorage)
+│   └── MockAuth.jsx       ← login simulado del admin
+├── components/           ← Crest, Icons, SiteLayout, Displays (tabla, goleadores, etc.)
 ├── pages/
-│   ├── Login.jsx
-│   ├── Login.css
-│   └── Home.jsx
-├── services/
-│   ├── temporadasService.js
-│   └── equiposService.js
-├── hooks/
-│   └── useUserTeam.js
-├── App.jsx                   ← Router + rutas
-├── main.jsx                  ← Entry point
-└── index.css                 ← Variables globales + reset
+│   ├── Home.jsx           ← landing (hero, cómo funciona, competencias, noticias, relámpago, históricos)
+│   ├── Competition.jsx    ← detalle por competencia (Posiciones · Goleadores · Resultados)
+│   ├── Historicos.jsx · Equipos.jsx
+│   └── admin/             ← panel: Dashboard, Competencias, Equipos, Jugadores, Resultados
+├── App.jsx               ← rutas (público + /admin)
+└── index.css             ← sistema de estilos (tema claro/oscuro)
 ```
 
-## Setup
+## Rutas
 
-### 1. Instalar dependencias
+- `/` — landing · `/competencia/:id` — detalle · `/historicos` · `/equipos`
+- `/admin` — panel de administración (login demo: cualquier email/clave)
+
+## Desarrollo
+
 ```bash
 npm install
+npm run dev      # http://localhost:3000
+npm run build    # build de producción
 ```
 
-### 2. Configurar Firebase
-Copiá `.env.example` a `.env` y completá con tus credenciales:
-```bash
-cp .env.example .env
-```
+## Datos mock
 
-### 3. Correr en desarrollo
-```bash
-npm run dev
-```
+Todo el contenido es de ejemplo y se guarda en `localStorage`. Desde el panel se pueden crear
+competencias, equipos y jugadores, y cargar resultados (las tablas y goleadores se recalculan
+solos). El botón **"Restaurar datos de ejemplo"** (Panel) vuelve al estado inicial.
 
-## Agregar una nueva página
+## Próximos pasos
 
-1. Crear `src/pages/MiPagina.jsx`
-2. Importar en `App.jsx` y agregar la `<Route>`
-3. Agregar el `NavItem` en `Layout.jsx`
-
-## Variables CSS
-
-Todas en `src/index.css`:
-```css
---color-bg:      #0f1117   /* fondo principal */
---color-surface: #1a1d27   /* cards/sidebar */
---color-border:  #2a2d3e   /* bordes */
---color-primary: #6366f1   /* acento */
---color-text:    #e2e8f0   /* texto */
---color-muted:   #64748b   /* texto secundario */
-```
+- Conectar Firebase (Auth + Firestore) reemplazando `store/` y `MockAuth`.
+- Subida de escudos/fotos reales, generador de llaves (playoffs), más estadística.

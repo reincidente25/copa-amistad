@@ -1,38 +1,50 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import PrivateRoute from './components/common/PrivateRoute';
+import { AppStoreProvider } from './store/AppStore';
+import { MockAuthProvider } from './store/MockAuth';
 
-// Pages
-import Login    from './pages/Login';
-import Home     from './pages/Home';
-// import Dashboard from './pages/Dashboard';  // ← agregar páginas acá
+import SiteLayout from './components/SiteLayout';
+import Home from './pages/Home';
+import Competition from './pages/Competition';
+import Historicos from './pages/Historicos';
+import Equipos from './pages/Equipos';
 
-const App = () => {
+import AdminLayout, { RequireAdmin } from './pages/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import Dashboard from './pages/admin/Dashboard';
+import AdminCompetencias from './pages/admin/AdminCompetencias';
+import AdminEquipos from './pages/admin/AdminEquipos';
+import AdminJugadores from './pages/admin/AdminJugadores';
+import AdminResultados from './pages/admin/AdminResultados';
+
+export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
+    <AppStoreProvider>
+      <MockAuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Sitio público */}
+            <Route element={<SiteLayout />}>
+              <Route index element={<Home />} />
+              <Route path="competencia/:id" element={<Competition />} />
+              <Route path="historicos" element={<Historicos />} />
+              <Route path="equipos" element={<Equipos />} />
+            </Route>
 
-          {/* Pública */}
-          <Route path="/login" element={<Login />} />
+            {/* Administración */}
+            <Route path="admin/login" element={<AdminLogin />} />
+            <Route path="admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
+              <Route index element={<Dashboard />} />
+              <Route path="competencias" element={<AdminCompetencias />} />
+              <Route path="equipos" element={<AdminEquipos />} />
+              <Route path="jugadores" element={<AdminJugadores />} />
+              <Route path="resultados" element={<AdminResultados />} />
+            </Route>
 
-          {/* Privadas */}
-          <Route path="/" element={
-            <PrivateRoute><Home /></PrivateRoute>
-          } />
-
-          {/* <Route path="/dashboard" element={
-            <PrivateRoute><Dashboard /></PrivateRoute>
-          } /> */}
-
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </MockAuthProvider>
+    </AppStoreProvider>
   );
-};
-
-export default App;
+}
